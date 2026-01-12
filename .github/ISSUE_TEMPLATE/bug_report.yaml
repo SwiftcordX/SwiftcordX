@@ -1,0 +1,73 @@
+name: Bug Report
+description: "Found a bug? Something isn't working right? This is the issue for you!"
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: describe
+    attributes:
+      label: Describe the Bug
+      description: Describe the bug, and tell us what happened, and what you expected _should_ happen.
+      placeholder: Tell us what happened!
+      value: |
+        **Bug Description**
+        
+        **Actual Behaviour**
+        
+        **Expected Behavior**
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproducing the Bug
+      description: If possible, include the steps to reproduce this bug here!
+      placeholder: Reproduction steps
+      value: |
+        1...
+        2...
+        3...
+        ...
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: x.x.x
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: Category
+      description: "What's the category that most closely fits the bug?"
+      options:
+        - Message history
+        - Sending messages
+        - Message rendering
+        - Media (images, audio, video etc.)
+        - Settings
+        - Connection
+        - Login
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Log Output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, please add screenshots to help us better understand the bug.
+  - type: textarea
+    id: misc
+    attributes:
+      label: Additional Info
+      description: Is there anything that would aid in debugging this issue? Please enter it here!
