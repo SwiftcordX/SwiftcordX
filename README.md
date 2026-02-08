@@ -32,7 +32,7 @@ from the ground up.
 **If you like this project, please smash the star button and be one of my stargazers 🌟! It motivates
 me to continue investing time into Swiftcord.**
 
-## Supporters
+## Supporters of Original Project
 Supporters get feature releases 2 weeks before they are made public! 
 
 **Be a supporter to support me and this project's future! Perfect if you'd like to contribute but don't 
@@ -40,35 +40,6 @@ have the skills or time required! It's a great way of thanking me for my work. I
 
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/cryptoAlgorithm?label=Sponsor%20Me!&logo=buymeacoffee&style=for-the-badge)](https://github.com/sponsors/cryptoAlgorithm)
 [![Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dcryptoalgo%26type%3Dpatrons&style=for-the-badge)](https://www.patreon.com/cryptoAlgo)
-
-<!--<table>
-  <tr>
-    <td>
-      <img src="" width=100 height=100/>
-    </td>
-    <td>
-      <strong></strong>
-      <br>
-      <a href=""></a>
-      <br><br>
-      <i></i>
-    </td>
-  </tr>
-</table>-->
-
-<!--### Amazing Supporter 🤯-->
-<!--<table>
-  <tr>
-    <td>
-      <img src="" width=36 height=36/>
-    </td>
-    <td>
-      <code><strong></strong></code> - First amazing supporter!
-    </td>
-  </tr>
-</table>-->
-
-<!--### Extremely Cool Supporter 🧊-->
 
 ## Contents
 * [Motivation](#motivation)
@@ -101,7 +72,7 @@ both Apple Silicon and Intel.
 For the latest features and fixes, [a pre-built version of the latest commit is available here](https://nightly.link/SwiftcordApp/Swiftcord/workflows/main/main/Swiftcord_Canary.zip)
 
 ### Alpha (More stable, less updated)
-[![Download latest GitHub release](https://img.shields.io/github/v/release/cryptoAlgorithm/Swiftcord?style=for-the-badge)](https://github.com/cryptoAlgorithm/Swiftcord/releases/)
+[![Download latest GitHub release](https://img.shields.io/github/v/release/Dohasing/Swiftcord?style=for-the-badge)](https://github.com/Dohasing/Swiftcord/releases/)
 
 Alpha releases are available at [GitHub Releases](https://github.com/cryptoAlgorithm/Swiftcord/releases/)
 
