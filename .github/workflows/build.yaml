@@ -31,8 +31,7 @@ jobs:
 
       - name: Build with xcodebuild
         run: |
-          xcodebuild -project Swiftcord.xcodeproj -scheme Swiftcord -configuration 'App Store' archive -archivePath Swiftcord.xcarchive \
-          -archivePath $RUNNER_TEMP/Swiftcord.xcarchive \
+          xcodebuild -project Swiftcord.xcodeproj -scheme Swiftcord -configuration 'App Store' archive -archivePath $RUNNER_TEMP/Swiftcord.xcarchive \
           COMPILER_INDEX_STORE_ENABLE=NO \
           CODE_SIGNING_ALLOWED=NO
 
