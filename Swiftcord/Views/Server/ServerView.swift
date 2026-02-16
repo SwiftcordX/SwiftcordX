@@ -29,22 +29,23 @@ struct ServerView: View {
 
 	@StateObject var serverCtx: ServerContext
 
-	private func loadChannels() {
-		guard state.loadingState != .initial else { return } // Ensure gateway is connected before loading anything
-        guard let channels = serverCtx.guild?.channels.discordSorted()
-		else { return }
-
-		if let lastChannel = UserDefaults.standard.string(forKey: "lastCh.\(serverCtx.guild!.id)"),
+    private func loadChannels() {
+        guard state.loadingState != .initial else { return } // Ensure gateway is connected before loading anything
+        guard let guild = serverCtx.guild else { return }
+        // Unwrap DecodeThrowable<Channel> to Channel
+        let channels = guild.channels.compactMap { try? $0.unwrap() }.discordSorted()
+        
+        if let lastChannel = UserDefaults.standard.string(forKey: "lastCh.\(serverCtx.guild!.id)"),
            let lastChObj = channels.first(where: { $0.id == lastChannel }) { // swiftlint:disable:this indentation_width
-            serverCtx.channel = lastChObj
-            return
+          serverCtx.channel = lastChObj
+          return
         }
         let selectableChs = channels.filter { $0.type != .category }
-		serverCtx.channel = selectableChs.first
-
+        serverCtx.channel = selectableChs.first
+        
         // Prevent deadlocking if there are no DMs/channels
-		if serverCtx.channel == nil { state.loadingState = .messageLoad }
-    }
+        if serverCtx.channel == nil { state.loadingState = .messageLoad }
+      }
 
     private static func computeBasePermissions(
         for member: Member,
@@ -111,25 +112,35 @@ struct ServerView: View {
         NavigationView {
             // MARK: Channel List
             VStack(spacing: 0) {
-				if let guild = guild {
-                    ChannelList(channels: guild.properties.name == "DMs" ? gateway.cache.dms : guild.channels, selCh: $serverCtx.channel)
-                        .equatable()
-						.toolbar {
-							ToolbarItem {
-                                Text(guild.properties.name == "DMs" ? "dm" : "\(guild.properties.name)")
-									.font(.title3)
-									.fontWeight(.semibold)
-									.frame(maxWidth: 208) // Largest width before disappearing
-							}
-						}
-						.onChange(of: serverCtx.channel?.id) { newID in
-							guard let newID = newID else { return }
-							UserDefaults.standard.setValue(
-								newID,
-								forKey: "lastCh.\(serverCtx.guild!.id)"
-							)
-						}
-				} else {
+                if let guildCtx = guild {
+                        // Modern channel list with glass effect
+                        ChannelList(channels: guildCtx.properties.name == "DMs" ? gateway.cache.dms : guildCtx.channels.compactMap { try? $0.unwrap() }, selCh: $serverCtx.channel)
+                          .environmentObject(serverCtx)
+                          .background(.ultraThinMaterial)
+                          .toolbar {
+                            ToolbarItem {
+                              HStack {
+                                Text(guildCtx.properties.name == "DMs" ? "dm" : "\(guildCtx.properties.name)")
+                                  .font(.title3)
+                                  .fontWeight(.semibold)
+                                  .foregroundColor(.primary)
+                                
+                                Spacer()
+                                
+                                Button(action: toggleSidebar) {
+                                  Image(systemName: "sidebar.left")
+                                    .font(.title2)
+                                    .foregroundColor(.secondary)
+                                }
+                                .buttonStyle(.plain)
+                              }
+                              .padding(.horizontal, 16)
+                              .padding(.trailing, 12)
+                              .padding(.vertical, 8)
+                            }
+                          }
+                          .frame(maxWidth: .infinity, maxHeight: .infinity)
+                      } else {
 					ZStack {}
 						.frame(minWidth: 240, maxHeight: .infinity)
 				}
