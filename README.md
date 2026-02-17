@@ -1,4 +1,4 @@
-<p align=center><image src="https://github.com/Dohasing/Swiftcord/blob/main/GITHUB-Resources/AppIcon.tiff" height="256" /></p>
+<p align=center><image src="https://github.com/Dohasing/Swiftcord/blob/main/GITHUB-Resources/AppIcon.png" height="256" /></p>
 
 <h1 align="center">Swiftcord</h1>
 
@@ -10,8 +10,8 @@
   <!-- Self-hosted tokei_rs instance, only works for repos in the SwiftcordApp org -->
   <img alt="" src="http://vinkwok.mywire.org/tokei/github/SwiftcordApp/Swiftcord?style=for-the-badge&category=code">
   
-  <a aria-label="Download" href="https://github.com/SwiftcordApp/Swiftcord/releases/latest">
-    <img alt="" src="https://img.shields.io/github/v/release/cryptoAlgorithm/Swiftcord?style=for-the-badge&labelColor=black&color=eb563c&label=Download">
+  <a aria-label="Download" href="https://github.com/Dohasing/Swiftcord/releases/latest">
+    <img alt="" src="https://img.shields.io/github/v/release/Dohasing/Swiftcord?style=for-the-badge&labelColor=black&color=eb563c&label=Download">
   </a>
 </p>
 
@@ -95,15 +95,10 @@ You'll need **macOS Monterey and above (>= 12.0)** to run Swiftcord.
 Releases from the channels below are universal bundles, and run natively on
 both Apple Silicon and Intel.
 
-### Nightly Builds (Latest fixes/features, built from the latest commit on `main`, might be unstable)
-[![Download latest nightly build](https://img.shields.io/github/actions/workflow/status/SwiftcordApp/Swiftcord/build.yaml.svg?style=for-the-badge)](https://nightly.link/SwiftcordApp/Swiftcord/workflows/build.yaml/main/swiftcord-canary.zip)
-
-For the latest features and fixes, [a pre-built version of the latest commit is available here](https://nightly.link/SwiftcordApp/Swiftcord/workflows/main/main/Swiftcord_Canary.zip)
-
 ### Alpha (More stable, less updated)
-[![Download latest GitHub release](https://img.shields.io/github/v/release/cryptoAlgorithm/Swiftcord?style=for-the-badge)](https://github.com/cryptoAlgorithm/Swiftcord/releases/)
+[![Download latest GitHub release](https://img.shields.io/github/v/release/Dohasing/Swiftcord?style=for-the-badge)](https://github.com/cryptoAlgorithm/Swiftcord/releases/)
 
-Alpha releases are available at [GitHub Releases](https://github.com/cryptoAlgorithm/Swiftcord/releases/)
+Alpha releases are available at [GitHub Releases](https://github.com/Dohasing/Swiftcord/releases/)
 
 ### Homebrew
 [![homebrew cask](https://img.shields.io/homebrew/cask/v/swiftcord?style=for-the-badge)](https://formulae.brew.sh/cask/swiftcord)
