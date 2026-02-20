@@ -12,8 +12,23 @@ import DiscordKit
 import DiscordKitCore
 
 struct ContentView: View {
-    @State private var loadingGuildID: Snowflake?
+    @Environment(\.managedObjectContext) private var viewContext
 
+    /*@FetchRequest(
+     sortDescriptors: [NSSortDescriptor(keyPath: \MessageItem.timestamp, ascending: true)],
+     animation: .default)
+     private var items: FetchedResults<MessageItem>*/
+
+    private static var insetOffset: CGFloat {
+        // #available cannot be used in ternary statements (yet)
+        if #available(macOS 13.0, *) { return 0 } else { return -13 }
+    }
+    private static var dividerOffset: CGFloat {
+        // #available cannot be used in ternary statements (yet)
+        if #available(macOS 13.0, *) { return -8 } else { return -13 }
+    }
+
+    @State private var loadingGuildID: Snowflake?
     @State private var presentingOnboarding = false
     @State private var presentingAddServer = false
     @State private var skipWhatsNew = false
@@ -30,26 +45,23 @@ struct ContentView: View {
 
     private let log = Logger(category: "ContentView")
 
-    private func makeDMGuild() -> PreloadedGuild {
-        PreloadedGuild(
+    private func makeDMGuild() -> Guild {
+        Guild(
+            id: "@me",
+            name: "DMs",
+            owner_id: "",
+            afk_timeout: 0,
+            verification_level: .none,
+            default_message_notifications: .all,
+            explicit_content_filter: .disabled,
+            roles: [], emojis: [], features: [],
+            mfa_level: .none,
+            system_channel_flags: 0,
             channels: gateway.cache.dms,
-            properties: Guild(
-                id: "@me",
-                name: "DMs",
-                owner_id: "",
-                afk_timeout: 0,
-                verification_level: .none,
-                default_message_notifications: .all,
-                explicit_content_filter: .disabled,
-                roles: [], emojis: [], features: [],
-                mfa_level: .none,
-                system_channel_flags: 0,
-                channels: gateway.cache.dms,
-                premium_tier: .none,
-                preferred_locale: .englishUS,
-                nsfw_level: .default,
-                premium_progress_bar_enabled: false
-            )
+            premium_tier: .none,
+            preferred_locale: .englishUS,
+            nsfw_level: .default,
+            premium_progress_bar_enabled: false
         )
     }
 
@@ -90,7 +102,6 @@ struct ContentView: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            // MARK: Server List
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 8) {
                     ServerButton(
@@ -99,8 +110,7 @@ struct ContentView: View {
                         assetIconName: "DiscordIcon"
                     ) {
                         state.selectedGuildID = "@me"
-                    }
-                    .padding(.top, 4)
+                    }.padding(.top, 4)
 
                     HorizontalDividerView().frame(width: 32)
 
@@ -109,12 +119,11 @@ struct ContentView: View {
                         case .guild(let guild):
                             ServerButton(
                                 selected: state.selectedGuildID == guild.id || loadingGuildID == guild.id,
-                                name: guild.properties.name,
-                                serverIconURL: guild.properties.iconURL(),
-                                isLoading: loadingGuildID == guild.id
-                            ) {
-                                state.selectedGuildID = guild.id
-                            }
+                                name: guild.name,
+                                serverIconURL: guild.icon != nil ? "\(DiscordKitConfig.default.cdnURL)icons/\(guild.id)/\(guild.icon!).webp?size=240" : nil,
+                                isLoading: loadingGuildID == guild.id,
+                                onSelect: { state.selectedGuildID = guild.id }
+                            )
                         case .guildFolder(let folder):
                             ServerFolder(
                                 folder: folder,
@@ -137,16 +146,22 @@ struct ContentView: View {
                 .padding(.bottom, 8)
                 .frame(width: 72)
             }
+            .background(List {}.listStyle(.sidebar).overlay(.black.opacity(0.2)))
             .frame(maxHeight: .infinity, alignment: .top)
-            .background(VisualEffect()
-                .overlay(Color(nsColor: NSColor.controlBackgroundColor).opacity(0.5))
-            )
 
             ServerView(
                 guild: state.selectedGuildID == nil
                 ? nil
                 : (state.selectedGuildID == "@me" ? makeDMGuild() : gateway.cache.guilds[state.selectedGuildID!]), serverCtx: state.serverCtx
             )
+        }
+        // Blur the area behind the toolbar so the content doesn't show thru
+        .safeAreaInset(edge: .top) {
+            VStack {
+                Divider().frame(maxWidth: .infinity)
+            }
+            .frame(maxWidth: .infinity)
+            .background(.ultraThinMaterial)
         }
         .environmentObject(audioManager)
         .onChange(of: state.selectedGuildID) { id in
@@ -157,7 +172,6 @@ struct ContentView: View {
             if state == .gatewayConn { loadLastSelectedGuild() }
             if state == .messageLoad,
                !seenOnboarding || prevBuild != Bundle.main.infoDictionary?["CFBundleVersion"] as? String { // swiftlint:disable:this indentation_width
-                // If the user hasn't seen the onboarding (first page), present onboarding immediately
                 if !seenOnboarding { presentingOnboarding = true }
                 Task {
                     do {
@@ -166,9 +180,7 @@ struct ContentView: View {
                             .body
                     } catch {
                         skipWhatsNew = true
-                        return
                     }
-                    // If the user has already seen the onboarding, present the onboarding sheet only after loading the changelog
                     presentingOnboarding = true
                 }
             }
@@ -201,7 +213,7 @@ struct ContentView: View {
         } content: {
             OnboardingView(
                 skipOnboarding: seenOnboarding,
-                skipWhatsNew: $skipWhatsNew,
+                skipWhatsNew: skipWhatsNew,
                 newMarkdown: $whatsNewMarkdown,
                 presenting: $presentingOnboarding
             )
@@ -223,6 +235,41 @@ struct ContentView: View {
             }
         }
     }
+
+    /*private func addItem() {
+        withAnimation {
+            let newItem = MessageItem(context: viewContext)
+            newItem.timestamp = Date()
+
+            do {
+                try viewContext.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate.
+     You should not use this function in a shipping application, although it may be useful
+     during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
+    }
+
+    private func deleteItems(offsets: IndexSet) {
+        withAnimation {
+            offsets.map { items[$0] }.forEach(viewContext.delete)
+
+            do {
+                try viewContext.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate.
+     You should not use this function in a shipping application, although it may be useful
+     during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
+    }*/
 }
 
 private let itemFormatter: DateFormatter = {
